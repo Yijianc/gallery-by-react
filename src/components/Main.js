@@ -91,6 +91,39 @@ var ImgFigure = React.createClass({
 //}
 });
 
+// 控制组件
+var ControllerUnit = React.createClass({
+
+  handleClick(e) {
+
+    // 如果点击的是当前选中态的按钮，则翻转图片，否则将对应的图片居中
+    if (this.props.arrange.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  },
+
+  render() {
+    var controllerUnitClassName = 'controller-unit';
+
+    // 如果对应的是居中图片，显示控制按钮的居中态
+    if (this.props.arrange.isCenter) {
+      controllerUnitClassName += ' is-center';
+
+      // 如果同时对应的是翻转图片，显示控制按钮的翻转态
+      if (this.props.arrange.isInverse) {
+        controllerUnitClassName += ' is-inverse';
+      }
+    }
+    return (
+      <span className={controllerUnitClassName} onClick={this.handleClick}></span>
+    );
+  }
+});
+
 
 var AppComponent = React.createClass({
 //class AppComponent extends React.Component {
@@ -195,6 +228,8 @@ var AppComponent = React.createClass({
       };
     }
 
+    //debugger;
+
     if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
       imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
     }
@@ -293,7 +328,21 @@ var AppComponent = React.createClass({
         };
       }
 
-      imgFigures.push(<ImgFigure data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+      imgFigures.push(
+        <ImgFigure key={index}
+                   data={value}
+                   ref={'imgFigure' + index}
+                   arrange={this.state.imgsArrangeArr[index]}
+                   inverse={this.inverse(index)}
+                   center={this.center(index)}/>
+      );
+
+      controllerUnits.push(
+        <ControllerUnit key={index}
+                        arrange={this.state.imgsArrangeArr[index]}
+                        inverse={this.inverse(index)}
+                        center={this.center(index)}/>
+      );
     }.bind(this));
 
     return (
